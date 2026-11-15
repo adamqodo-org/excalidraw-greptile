@@ -1,4 +1,5 @@
 import {
+  countBy,
   isTransparent,
   mapFind,
   reduceToCommonValue,
@@ -11,6 +12,29 @@ import { throttleRAF } from "./utils";
 type RafCallback = FrameRequestCallback;
 
 describe("@excalidraw/common/utils", () => {
+  describe("countBy()", () => {
+    it("should count items per key", () => {
+      const counts = countBy(
+        [{ type: "rectangle" }, { type: "arrow" }, { type: "rectangle" }],
+        (element) => element.type,
+      );
+
+      expect(counts.get("rectangle")).toBe(2);
+      expect(counts.get("arrow")).toBe(1);
+      expect(counts.size).toBe(2);
+    });
+
+    it("should keep keys in first-seen order", () => {
+      const counts = countBy(["b", "a", "b", "c"], (value) => value);
+
+      expect([...counts.keys()]).toEqual(["b", "a", "c"]);
+    });
+
+    it("should return an empty map for an empty array", () => {
+      expect(countBy([], () => "key").size).toBe(0);
+    });
+  });
+
   describe("isTransparent()", () => {
     it("should return true when color is rgb transparent", () => {
       expect(isTransparent("#ff00")).toEqual(true);

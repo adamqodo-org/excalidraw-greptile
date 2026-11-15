@@ -545,6 +545,22 @@ export const arrayToMapWithIndex = <T extends { id: string }>(
   }, new Map<string, [element: T, index: number]>());
 
 /**
+ * Count how many items map to each key.
+ * Keys appear in the returned map in the order they are first seen.
+ */
+export const countBy = <T>(
+  items: readonly T[],
+  getKey: (item: T) => string,
+): Map<string, number> => {
+  const counts = new Map<string, number>();
+  for (const item of items) {
+    const key = getKey(item);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return counts;
+};
+
+/**
  * Transform array into an object, use only when array order is irrelevant.
  */
 export const arrayToObject = <T>(
